@@ -84,6 +84,23 @@ public class PlatformerTest {
             test.getPlayer().move();
         Assert.assertEquals(150.0, test.getPlayer().y);
     }
+    
+    @Test
+    public void playerWin(){
+        Platformer test = new Platformer(new JGPoint(640,480));
+
+        test.setKey(39);
+        for(int i = 0; i < 71; i++)
+        {
+            test.doFrame();
+            test.getPlayer().move();
+        }
+        test.clearKey(39);
+        Assert.assertEquals(101.0, test.getPlayer().x);
+        Assert.assertTrue(test.getPlayerWin());       
+        
+        
+    }
     /**
      * Test of main method, of class Platformer.
      */

@@ -5,6 +5,7 @@
 package platformer;
 import jgame.*;
 import jgame.platform.*;
+import javax.swing.JOptionPane;
 /**
  *
  * @author jrios
@@ -13,6 +14,7 @@ public class Platformer extends JGEngine{
     private PlayerObject player;
     private final double jumpBase = 150.0;
     private final double maxJump = 12.0;
+    private boolean playerWin;
     
     public Platformer(JGPoint size){
         initEngine(size.x, size.y);
@@ -32,6 +34,7 @@ public class Platformer extends JGEngine{
     
     public void doFrame(){
         moveObjects("Player",1);
+        checkWin();
         System.out.println("In doFrame()");
         if(existsObject("Player"))
             System.out.println("existsObject worked!");
@@ -43,15 +46,28 @@ public class Platformer extends JGEngine{
     }
     
     public void paintFame(){
+
         System.out.println("In paintFrame()");
     }
-    /**
-     * main will start the game
-     */
+    
+    public void checkWin(){
+        System.out.println("In checkWin()");
+        if(player.x == 100.0)
+        {
+            playerWin = true;
+            //JOptionPane.showMessageDialog(this, "You win!");
+        }
+    }
+   
+    public boolean getPlayerWin(){
+        return playerWin;
+    }
+    
     public static void main(String[] args) {
         // TODO code application logic here
         new Platformer(new JGPoint(640,480));
     }
+    
 
     //Player class currently in Engine class in order to use draw methods
     public class PlayerObject extends JGObject{
@@ -76,8 +92,11 @@ public class Platformer extends JGEngine{
                     hitJumpApex = true;
                 if((player.y > jumpBase - maxJump)&&!hitJumpApex)
                     player.y=player.y-1;
-                else if((player.y > jumpBase)&&hitJumpApex)
+                else if((player.y < jumpBase)&&hitJumpApex)
                     player.y = player.y +1;
+                else if(player.y == jumpBase && hitJumpApex)
+                    hitJumpApex = false;
+                
             }
             if(!getKey(KeyUp))
                 if(player.y != jumpBase)
@@ -85,6 +104,7 @@ public class Platformer extends JGEngine{
                     player.y = player.y+1;
                     hitJumpApex = false;
                 }
+            //checkWin();
         }
 
         /** Draw the object. */
