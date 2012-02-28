@@ -1,15 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package platformer;
 import jgame.*;
 import jgame.platform.*;
 import javax.swing.JOptionPane;
-/**
- *
- * @author jrios
- */
+
 public class Platformer extends JGEngine{
     private PlayerObject player;
     private final double jumpBase = 150.0; //The position where the player was when a jump starts
@@ -118,7 +112,6 @@ public class Platformer extends JGEngine{
                     hitJumpApex = false; //have to reset just in case we hit the apex, began falling
 											//then released the key
                 }
-            //checkWin();
         }
 
         /** Draw the object. */
