@@ -30,6 +30,7 @@ public class Project extends JFrame implements ActionListener
     private JTextArea welcome_info;
     private JTextArea display;
     private String invalid_username_message;
+	private Platformer ourGame;
             
     public Project() throws IOException
     { 
@@ -152,6 +153,7 @@ public class Project extends JFrame implements ActionListener
         Information.add(display);
         this.add(Information,BorderLayout.SOUTH);  
         Information.setVisible(false);
+		ourGame.main();
     }
 
     @Override
