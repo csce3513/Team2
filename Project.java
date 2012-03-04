@@ -1,3 +1,9 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package notmario;
+
 
 
 /**
@@ -18,6 +24,8 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import jgame.*;
+import jgame.platform.*;
 
 
 public class Project extends JFrame implements ActionListener
@@ -30,7 +38,7 @@ public class Project extends JFrame implements ActionListener
     private JTextArea welcome_info;
     private JTextArea display;
     private String invalid_username_message;
-	private Platformer ourGame;
+    private Platformer ourGame;
             
     public Project() throws IOException
     { 
@@ -65,6 +73,10 @@ public class Project extends JFrame implements ActionListener
     public String getUserName()
     {
         return user_name;
+    }
+    
+    public Platformer getGame(){
+        return ourGame;
     }
     
     
@@ -145,6 +157,7 @@ public class Project extends JFrame implements ActionListener
             {
                 Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
             }
+            ourGame = new Platformer(new JGPoint(640,480));
         }
          
         else
@@ -153,7 +166,7 @@ public class Project extends JFrame implements ActionListener
         Information.add(display);
         this.add(Information,BorderLayout.SOUTH);  
         Information.setVisible(false);
-		ourGame.main();
+	
     }
 
     @Override
@@ -176,7 +189,6 @@ public class Project extends JFrame implements ActionListener
         }
         if(name.length>9)
             pass = false;
-            
         return pass;
     }
     public boolean Read_File( String name) throws FileNotFoundException

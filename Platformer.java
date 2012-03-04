@@ -1,5 +1,4 @@
-
-package platformer;
+package notmario;
 import jgame.*;
 import jgame.platform.*;
 import javax.swing.JOptionPane;
@@ -9,10 +8,12 @@ public class Platformer extends JGEngine{
     private final double jumpBase = 150.0; //The position where the player was when a jump starts
     private final double maxJump = 12.0; //The maximum height for our player to jump
     private boolean playerWin;				//boolean flag to see if the player has won
+    public boolean gameStart;
     
     public Platformer(JGPoint size){
         initEngine(size.x, size.y);
         player = new PlayerObject();
+        gameStart = true;
         //System.out.println("Done with constructor");
     }
     
@@ -43,7 +44,7 @@ public class Platformer extends JGEngine{
     }
     
     public void checkWin(){
-        System.out.println("In checkWin()");
+        //System.out.println("In checkWin()");
         if(player.x == 100.0)
         {
             playerWin = true;
@@ -55,7 +56,7 @@ public class Platformer extends JGEngine{
         return playerWin;
     }
     
-    public static void main(String[] args) {
+    public static void main() {
         new Platformer(new JGPoint(640,480));
     }
     
@@ -63,7 +64,7 @@ public class Platformer extends JGEngine{
     //Player class currently in Engine class in order to use draw methods
     public class PlayerObject extends JGObject{
         private boolean hitJumpApex; //boolean to tell us when to stop going up and start coming down
-										//from a jump
+					//from a jump
         //Constructor
         PlayerObject(){
             super("Player", true, 30,150,1,null);
