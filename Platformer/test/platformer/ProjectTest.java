@@ -132,21 +132,23 @@ public class ProjectTest {
 		//Check initial position
 		assertEquals(30.0, testPlat.getPlayer().x, 0.5);
 		assertEquals(150.0,testPlat.getPlayer().y, 0.5);
-                //Note: Player will now fall to ground tiles
-                //  at position (30, 174)
 		//Set input to up arrow key
 		testPlat.setKey(38);
 		//This for loop has the player move up for 12 frames.
 		//This should pu thte player 12 y-coordinates lower
-        for(int i=0;i<12;i++)
+        for(int i=0;i<12;i++){
+            testPlat.doFrame();
             testPlat.getPlayer().move();
+        }
         assertEquals(162.0, testPlat.getPlayer().y, 0.5);
         testPlat.clearKey(38);
 		//This for loop should land the player back where it started
-        for(int i=0; i<12; i++)
+        for(int i=0; i<20; i++){
+            testPlat.doFrame();
             testPlat.getPlayer().move();
-        assertEquals(174.0, testPlat.getPlayer().y, 0.5);
-        assertTrue(testPlat.and(testPlat.getPlayer().checkBGCollision(0, testPlat.getPlayer().y+16),3));
+        }
+        assertEquals(182.0, testPlat.getPlayer().y, 0.5);
+        assertTrue(JGObject.and(testPlat.getPlayer().checkBGCollision(0, 16),3));
 	
 	}
 	

@@ -113,6 +113,7 @@ public class Platformer extends JGEngine{
 				//If we're not at the jump base whenever the UP key isn't pressed,
 				//then we start falling and reset our apex flag
                 fall();
+            System.out.println("ypos: " + player.y);
                 //System.out.println("hitJumpApex: " + hitJumpApex);
         }
 
