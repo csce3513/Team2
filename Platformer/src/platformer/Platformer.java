@@ -5,8 +5,8 @@ import javax.swing.JOptionPane;
 
 public class Platformer extends JGEngine{
     private PlayerObject player;
-    private double jumpBase = 0.0; //The position where the player was when a jump starts
-    private final double maxJump = 18.0; //The maximum height for our player to jump
+    private double jumpBase = 3000.0; //The position where the player was when a jump starts
+    private final double maxJump = 40.0; //The maximum height for our player to jump
     private boolean playerWin;				//boolean flag to see if the player has won
     public boolean gameStart;
     
@@ -97,7 +97,7 @@ public class Platformer extends JGEngine{
             if(getKey(KeyUp))
             {
 				//if the player's position is now at the apex of the jump, we set the flag
-                if(player.y == jumpBase - maxJump)
+                if(player.y <= jumpBase - maxJump)
                     hitJumpApex = true;
 				//if we're below the max height and we haven't hit the apex,
 				//keep going up
@@ -106,37 +106,30 @@ public class Platformer extends JGEngine{
 				//If we're still above where we started the jump and
 				//we previously hit the apex, we come back down
                 else if((player.y < jumpBase)&&hitJumpApex)
-                    player.y = player.y +1;
-				//as soon as we hit the base, we stop falling and reset the flag
-                else if(player.y == jumpBase && hitJumpApex)
-                    hitJumpApex = false;
-                
+                    fall();
             }
 			//This covers us when we release the jump key in the middle of a jump
             if(!getKey(KeyUp))
 				//If we're not at the jump base whenever the UP key isn't pressed,
 				//then we start falling and reset our apex flag
                 fall();
+                //System.out.println("hitJumpApex: " + hitJumpApex);
         }
 
         public void hit_bg(int tilecid) {
 			// Look around to see which direction is free.  If we find a free
 			// direction, move that way.
                         if (and(checkBGCollision(0,player.y + 16),3)) {
-				player.y = player.y;
                                 jumpBase = player.y;
-                                System.out.println("Colliding");
+                                hitJumpApex = false;
                                 
 			} else if (and(checkBGCollision(player.x+16,0),3)) {
-				player.x = player.x;
-                                fall();
+				player.x--;
                                 
 			} else if (and(checkBGCollision(player.x-16, 0),3)) {
-				player.x = player.x;
-                                fall();
+				player.x++;
                                 
 			} else if (and(checkBGCollision(player.y-16, 0), 3)){
-                            player.y = player.y;
                             fall();
                         }
                         
@@ -144,10 +137,9 @@ public class Platformer extends JGEngine{
         }
         
         private void fall(){
-            if(!and(checkBGCollision(0,player.y + 16),3))
+                if(!and(checkBGCollision(0,0),3))
                 {
                     player.y = player.y+1;
-                    hitJumpApex = false;
                 }
         }
         
