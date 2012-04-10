@@ -1,12 +1,12 @@
-package notmario;
+package platformer;
 import jgame.*;
 import jgame.platform.*;
 import javax.swing.JOptionPane;
 
 public class Platformer extends JGEngine{
     private PlayerObject player;
-    private final double jumpBase = 150.0; //The position where the player was when a jump starts
-    private final double maxJump = 12.0; //The maximum height for our player to jump
+    private double jumpBase = 3000.0; //The position where the player was when a jump starts
+    private final double maxJump = 40.0; //The maximum height for our player to jump
     private boolean playerWin;				//boolean flag to see if the player has won
     public boolean gameStart;
     
@@ -25,12 +25,21 @@ public class Platformer extends JGEngine{
     
     public void initGame(){
         setFrameRate(35,2);
+        defineMedia("Platformer.tbl");
+        setBGImage("background");
+        setTiles(0,11, new String[] {"###############"});
+        setTiles(7, 9, new String[] {"#####"});
+        setTileSettings("#", 2, 0);
         //System.out.println("In initGame()");
     }
     
     public void doFrame(){
         moveObjects("Player",1);	//Moves the "Player" object with collision id of 1
         checkWin();					//check to see if we've passed the end-of-level marker
+        checkBGCollision(
+			1+2, // collide with the marble and border tiles
+			1    // cids of our objects
+		);
         //System.out.println("In doFrame()");
     }
     
@@ -67,7 +76,7 @@ public class Platformer extends JGEngine{
 					//from a jump
         //Constructor
         PlayerObject(){
-            super("Player", true, 30,150,1,null);
+            super("Player", true, 30,150,1,"myanim_l1");
             xspeed=0;
             yspeed=0;
             hitJumpApex = false;
@@ -88,7 +97,7 @@ public class Platformer extends JGEngine{
             if(getKey(KeyUp))
             {
 				//if the player's position is now at the apex of the jump, we set the flag
-                if(player.y == jumpBase - maxJump)
+                if(player.y <= jumpBase - maxJump)
                     hitJumpApex = true;
 				//if we're below the max height and we haven't hit the apex,
 				//keep going up
@@ -97,30 +106,50 @@ public class Platformer extends JGEngine{
 				//If we're still above where we started the jump and
 				//we previously hit the apex, we come back down
                 else if((player.y < jumpBase)&&hitJumpApex)
-                    player.y = player.y +1;
-				//as soon as we hit the base, we stop falling and reset the flag
-                else if(player.y == jumpBase && hitJumpApex)
-                    hitJumpApex = false;
-                
+                    fall();
             }
 			//This covers us when we release the jump key in the middle of a jump
             if(!getKey(KeyUp))
 				//If we're not at the jump base whenever the UP key isn't pressed,
 				//then we start falling and reset our apex flag
-                if(player.y != jumpBase)
-                {
-                    player.y = player.y+1;
-                    hitJumpApex = false; //have to reset just in case we hit the apex, began falling
-											//then released the key
-                }
+                fall();
+            System.out.println("ypos: " + player.y);
+                //System.out.println("hitJumpApex: " + hitJumpApex);
         }
 
+        public void hit_bg(int tilecid) {
+			// Look around to see which direction is free.  If we find a free
+			// direction, move that way.
+                        if (and(checkBGCollision(0,player.y + 16),3)) {
+                                jumpBase = player.y;
+                                hitJumpApex = false;
+                                
+			} else if (and(checkBGCollision(player.x+16,0),3)) {
+				player.x--;
+                                
+			} else if (and(checkBGCollision(player.x-16, 0),3)) {
+				player.x++;
+                                
+			} else if (and(checkBGCollision(player.y-16, 0), 3)){
+                            fall();
+                        }
+                        
+                        
+        }
+        
+        private void fall(){
+                if(!and(checkBGCollision(0,0),3))
+                {
+                    player.y = player.y+1;
+                }
+        }
+        
         /** Draw the object. */
-        public void paint() {
+        /*public void paint() {
 			//Currently we're using JEngine's stuff to draw a blue circle for the player
             setColor(JGColor.blue);
             drawOval(x,y,16,16,true,true);
-        }
+        }*/
     }
 
 }

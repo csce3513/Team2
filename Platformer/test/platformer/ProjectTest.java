@@ -1,3 +1,5 @@
+package platformer;
+
 
 
 /*
@@ -9,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import org.junit.*;
 import static org.junit.Assert.*;
+import jgame.*;
 
 /**
  *
@@ -25,7 +28,7 @@ public class ProjectTest {
     @Before
     public void setUp() throws IOException {
         test= new Project();
-		testPlat = new Platformer();
+	testPlat = new Platformer(new JGPoint(640, 480));
         
     }
     
@@ -93,8 +96,8 @@ public class ProjectTest {
 	**/
     @Test
     public void playerPos(){
-        assertEquals(30.0, testPlat.getPlayer().x);
-		assertEquals(150.0,testPlat.getPlayer().y);
+        assertEquals(30.0, testPlat.getPlayer().x, 0.5);
+		assertEquals(150.0,testPlat.getPlayer().y, 0.5);
     }
     
 	/**
@@ -103,21 +106,21 @@ public class ProjectTest {
     @Test 
     public void playerMove(){
 		//Check initial position
-		assertEquals(30.0, testPlat.getPlayer().x);
-		assertEquals(150.0,testPlat.getPlayer().y);
+		assertEquals(30.0, testPlat.getPlayer().x, 0.5);
+		assertEquals(150.0,testPlat.getPlayer().y, 0.5);
 		//Set input to to right arrow key (39 = right arrow)
         testPlat.setKey(39);
 		//Move the player with right key pressed down
         testPlat.getPlayer().move();
 		//Assert that player has moved to the right
-        assertEquals(31.0,testPlat.getPlayer().x);
+        assertEquals(31.0,testPlat.getPlayer().x, 0.5);
         testPlat.clearKey(39);
 		//Set input to left arrow key (37 = right arrow)
         testPlat.setKey(37);
 		//Move the player with the left key pressed
         testPlat.getPlayer().move();
 		//Assert that player has moved to the left
-        assertEquals(30.0,testPlat.getPlayer().x);
+        assertEquals(30.0,testPlat.getPlayer().x, 0.5);
         testPlat.clearKey(37);
     }
 	
@@ -127,20 +130,25 @@ public class ProjectTest {
     @Test
 	public void playerJump(){
 		//Check initial position
-		assertEquals(30.0, testPlat.getPlayer().x);
-		assertEquals(150.0,testPlat.getPlayer().y);
+		assertEquals(30.0, testPlat.getPlayer().x, 0.5);
+		assertEquals(150.0,testPlat.getPlayer().y, 0.5);
 		//Set input to up arrow key
 		testPlat.setKey(38);
 		//This for loop has the player move up for 12 frames.
 		//This should pu thte player 12 y-coordinates lower
-        for(int i=0;i<12;i++)
+        for(int i=0;i<12;i++){
+            testPlat.doFrame();
             testPlat.getPlayer().move();
-        assertEquals(138.0, testPlat.getPlayer().y);
+        }
+        assertEquals(162.0, testPlat.getPlayer().y, 0.5);
         testPlat.clearKey(38);
 		//This for loop should land the player back where it started
-        for(int i=0; i<12; i++)
+        for(int i=0; i<20; i++){
+            testPlat.doFrame();
             testPlat.getPlayer().move();
-        assertEquals(150.0, testPlat.getPlayer().y);
+        }
+        assertEquals(182.0, testPlat.getPlayer().y, 0.5);
+        assertTrue(JGObject.and(testPlat.getPlayer().checkBGCollision(0, 16),3));
 	
 	}
 	
@@ -163,7 +171,7 @@ public class ProjectTest {
         testPlat.clearKey(39);
 		//Assert that the player has moved the right amount (past 100)
 		//And that the PlayerWin flag has gone off
-        assertEquals(101.0, testPlat.getPlayer().x);
+        assertEquals(101.0, testPlat.getPlayer().x, 0.5);
         assertTrue(testPlat.getPlayerWin());       
     }
 	
@@ -175,7 +183,7 @@ public class ProjectTest {
    {
       test.setUserName("Valid");
       try {
-        project.build_Information(test.CheckUserName(test.getUserName()));
+        test.build_Information(test.CheckUserName(test.getUserName()));
                 
 		} 
       catch (IOException ex) {
@@ -185,6 +193,7 @@ public class ProjectTest {
       assertNotNull(test.getGame().getPlayer());
       
    }
+        
 	
     /**
      * Test of main method, of class Project.
