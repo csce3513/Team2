@@ -91,18 +91,17 @@ public class Project extends JFrame implements ActionListener
         welcome_info.setEditable(false);
         welcome_info.setLineWrap(true);
         welcome_info.setWrapStyleWord(true);
-        welcome_info.setText("Welcome to Our Game.\n\n"+ 
-                "This if the First Release of our game,"+
-                "The idea of this game came from the very known"+
-                "game called Super Mario. Therefore  it is played"+
-                "in a way kind of simular to Super Mario."+
-                "You will use your keyboard's arrows to move "+
-                "left, rigth or up until you reach the goal"+
-                "There is no obstacle for this version of the game,"+
-                "but in the future obstacles and more interesting features"+
-                "will be added for your fun."+
-                "So go ahead and sign in so that you can start play the gamme.\n\n"+
-                "Enjoy Playing Our Game");
+        welcome_info.setText("Welcome to Our Game!\n\n"+ 
+                "The idea of this game came from the very well-known"+
+                " game called Super Mario. Therefore, it is played"+
+                " in a way kind of similar to Super Mario."+
+                " You will use your keyboard's arrows to move "+
+                " left, right or up until you reach the goal"+
+                " There is no obstacle for this version of the game,"+
+                " but in the future obstacles and more interesting features"+
+                " will be added for your fun."+
+                " So go ahead and sign in so that you can start playing the game.\n\n"+
+                " Enjoy Playing Our Game!");
        
   
         Welcome.setBorder(BorderFactory.createEtchedBorder(Color.yellow, Color.black));
