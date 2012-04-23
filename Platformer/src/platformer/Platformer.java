@@ -32,7 +32,29 @@ public class Platformer extends JGEngine{
         setGameState("InGame");
     }
     
+    public void startStartGame(){
+            removeObjects(null, 0, true);
+            clearKey(KeyEnter);
+    }
+    
+    public void doFrameStartGame(){
+        
+        if(getKey(KeyEnter)){
+            clearKey(KeyEnter);
+            //addGameState("InGame");
+            setGameState("InGame");
+        }
+    }
+    
+    public void paintFrameStartGame(){
+        drawString("Welcome to Definitely Not Mario!", pfWidth()/2, 20, 0, null, JGColor.black);
+        drawString("Press Enter to Begin!", pfWidth()/2, 30, 0, null, JGColor.black);
+
+    }
+    
     public void startInGame(){
+        //player = new PlayerObject();
+        //enemy = new EnemyObject();
         setTiles(0,11, new String[] {"###############"});
         setTiles(7, 9, new String[] {"#####"});
         setTileSettings("#", 2, 0);
@@ -45,7 +67,7 @@ public class Platformer extends JGEngine{
 			1+2, // collide with the ground and border tiles
 			1    // cids of our objects
 		);
-        //System.out.println("In doFrame()");
+        checkDeath();
     }
     
     public PlayerObject getPlayer(){
@@ -61,13 +83,35 @@ public class Platformer extends JGEngine{
         drawString("Score : 0", 0, 5, -1, null, JGColor.black);
     }
     
+    public void startGameOver(){
+        removeObjects(null, 0, true);
+        clearKey(KeyShift);
+    }
+    
+    public void paintFrameGameOver(){
+        drawString("This is the GameOver screen", pfWidth()/2, 0, 0, null, JGColor.black);
+    }
+    
+    public void doFrameGameOver(){
+        if(getKey(KeyShift))
+        {
+            clearKey(KeyShift);
+            setGameState("InGame");
+        }
+    }
+    
     public void checkWin(){
         //System.out.println("In checkWin()");
         if(player.x == 100.0)
         {
             playerWin = true;
-            //JOptionPane.showMessageDialog(this, "You win!");
+            //setGameState("WinGame");
         }
+    }
+    
+    public void checkDeath(){
+        if(getKey(KeyShift))
+            setGameState("GameOver");
     }
    
     public boolean getPlayerWin(){
@@ -83,12 +127,14 @@ public class Platformer extends JGEngine{
     public class PlayerObject extends JGObject{
         private boolean hitJumpApex; //boolean to tell us when to stop going up and start coming down
 					//from a jump
+        private int lives;
         //Constructor
         PlayerObject(){
             super("Player", true, 30,150,1,"myanim_l1");
             xspeed=0;
             yspeed=0;
             hitJumpApex = false;
+            lives = 3;
         }
         
         public void move() 
