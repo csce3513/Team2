@@ -29,12 +29,16 @@ public class Platformer extends JGEngine{
         setFrameRate(35,2);
         defineMedia("Platformer.tbl");
         setBGImage("background");
+        setGameState("InGame");
+    }
+    
+    public void startInGame(){
         setTiles(0,11, new String[] {"###############"});
         setTiles(7, 9, new String[] {"#####"});
         setTileSettings("#", 2, 0);
     }
     
-    public void doFrame(){
+    public void doFrameInGame(){
         moveObjects();	//Moves the "Player" object with collision id of 1
         checkWin();	//check to see if we've passed the end-of-level marker
         checkBGCollision(
@@ -52,9 +56,9 @@ public class Platformer extends JGEngine{
         return enemy;
     }
     
-    public void paintFame(){
+    public void paintFrameInGame(){
 		//This method holds anything we need to draw every frame
-        //System.out.println("In paintFrame()");
+        drawString("Score : 0", 0, 5, -1, null, JGColor.black);
     }
     
     public void checkWin(){
