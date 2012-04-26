@@ -86,6 +86,10 @@ public class Platformer extends JGEngine{
         return enemy;
     }
     
+    public String getGameState(){
+        return gameState;
+    }
+    
     public void paintFrameInGame(){
 		//This method holds anything we need to draw every frame
         drawString("Score : 0", 0, 5, -1, null, JGColor.black);
@@ -116,7 +120,7 @@ public class Platformer extends JGEngine{
     
     public void checkWin(){
         //System.out.println("In checkWin()");
-        if(player.x == 100.0)
+        if(player.x >= 500.0)
         {
             playerWin = true;
             //setGameState("WinGame");
@@ -152,15 +156,23 @@ public class Platformer extends JGEngine{
             life = numLives;
         }
         
+        public int getLife(){
+            return life;
+        }
+        
+        public void setLife(int numLives){
+            life = numLives;
+        }
+        
         public void move() 
         {
             //Instead of using x or yspeed, we alter position ourselves
             //This gives us finer control over player position, and allows
             //the player object to stop moving as soon as the button is released
             if(getKey(KeyRight))
-                player.xspeed = 1;
+                player.x++;
             if(getKey(KeyLeft))
-                player.xspeed = -1;
+                player.x--;
             if(!(getKey(KeyRight)||getKey(KeyLeft)))
                 player.xspeed = 0;
 				
@@ -174,7 +186,7 @@ public class Platformer extends JGEngine{
                 //if we're below the max height and we haven't hit the apex,
                 //keep going up
                 if((player.y > jumpBase - maxJump)&&!hitJumpApex)
-                    player.yspeed = -jumpSpeed;
+                    player.y = player.y - jumpSpeed;
                 //If we're still above where we started the jump and
                 //we previously hit the apex, we come back down
                 else if((player.y < jumpBase)&&hitJumpApex)
@@ -221,10 +233,8 @@ public class Platformer extends JGEngine{
         private void fall(){
                 if(!and(checkBGCollision(0,0),3))
                 {
-                    player.yspeed = jumpSpeed;
+                    player.y = player.y + jumpSpeed;
                 }
-                else
-                    player.yspeed = 0;
         }
     }
 

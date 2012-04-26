@@ -29,11 +29,12 @@ public class ProjectTest {
     public void setUp() throws IOException {
         test= new Project();
 	testPlat = new Platformer(new JGPoint(640, 480));
-        
+      // testPlat.initGame();  
     }
     
     @After
     public void tearDown() {
+        //testPlat.exitEngine(null);
         test = null;
     }
 
@@ -105,10 +106,10 @@ public class ProjectTest {
 	**/
     @Test 
     public void playerMove(){
-		//Check initial position
-		assertEquals(30.0, testPlat.getPlayer().x, 0.5);
-		assertEquals(150.0,testPlat.getPlayer().y, 0.5);
-		//Set input to to right arrow key (39 = right arrow)
+        //Check initial position
+        assertEquals(30.0, testPlat.getPlayer().x, 0.5);
+        assertEquals(150.0,testPlat.getPlayer().y, 0.5);
+        //Set input to to right arrow key (39 = right arrow)
         testPlat.setKey(39);
 		//Move the player with right key pressed down
         testPlat.getPlayer().move();
@@ -137,17 +138,17 @@ public class ProjectTest {
         //This for loop has the player move up for 12 frames.
         //This should pu thte player 12 y-coordinates lower
         for(int i=0;i<12;i++){
-            testPlat.doFrame();
+            //testPlat.doFrame();
             testPlat.getPlayer().move();
         }
-        assertEquals(162.0, testPlat.getPlayer().y, 0.5);
+        assertEquals(174.0, testPlat.getPlayer().y, 0.5);
         testPlat.clearKey(38);
         //This for loop should land the player back where it started
-        for(int i=0; i<20; i++){
-            testPlat.doFrame();
+        for(int i=0; i<12; i++){
+            //testPlat.doFrame();
             testPlat.getPlayer().move();
         }
-        assertEquals(182.0, testPlat.getPlayer().y, 0.5);
+        assertEquals(198.0, testPlat.getPlayer().y, 0.5);
     }
 	
 	/**
@@ -156,20 +157,21 @@ public class ProjectTest {
 	**/
     @Test
     public void playerWin(){
-		//Move to the right
+        //Move to the right
         testPlat.setKey(39);
-		//This for loop moves the player as the game engine would
-		//By calling doFrame and player.move()
-        for(int i = 0; i < 71; i++)
+        //This for loop moves the player as the game engine would
+        //By calling doFrame and player.move()
+        for(int i = 0; i < 500; i++)
         {
             testPlat.doFrame();
             testPlat.getPlayer().move();
         }
 		//Stop moving the player
         testPlat.clearKey(39);
+        testPlat.checkWin();
 		//Assert that the player has moved the right amount (past 100)
 		//And that the PlayerWin flag has gone off
-        assertEquals(101.0, testPlat.getPlayer().x, 0.5);
+        assertEquals(530.0, testPlat.getPlayer().x, 0.5);
         assertTrue(testPlat.getPlayerWin());       
     }
 	
@@ -202,7 +204,28 @@ public class ProjectTest {
         testPlat.getEnemy().move();
         assertTrue((testPlat.getEnemy().xspeed != 0));
     }
-	
+    
+   /* @Test public void testInGame(){
+        testPlat.initGame();
+        testPlat.setGameState("InGame");
+        System.out.println("Test InGame: " + testPlat.getGameState());
+        assertTrue(testPlat.getGameState().equals("InGame"));
+    }
+    
+    @Test public void testGameOver(){
+        testPlat.initGame();
+        testPlat.setGameState("InGame");
+        testPlat.getPlayer().setLife(1);
+        System.out.println("NumLives : " + testPlat.getPlayer().getLife());
+        testPlat.doFrame();
+        testPlat.getPlayer().setPos(130.0, 130.0);
+        testPlat.getEnemy().setPos(130.0, 130.0);
+        testPlat.getPlayer().hit(testPlat.getEnemy());
+        testPlat.doFrame();
+        System.out.println("Game State: " + testPlat.getGameState());
+        assertTrue(testPlat.getGameState().equals("GameOver"));
+    }
+	*/
     /**
      * Test of main method, of class Project.
      */
