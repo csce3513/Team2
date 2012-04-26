@@ -15,7 +15,7 @@ public class Platformer extends JGEngine{
     
     public Platformer(JGPoint size){
         initEngine(size.x, size.y);
-        player = new PlayerObject();
+        player = new PlayerObject(3);
         enemy = new EnemyObject();
         gameStart = true;
         gameState = "";
@@ -89,6 +89,7 @@ public class Platformer extends JGEngine{
     public void paintFrameInGame(){
 		//This method holds anything we need to draw every frame
         drawString("Score : 0", 0, 5, -1, null, JGColor.black);
+        drawString("Lives : " + player.life, 0, 5, 1, null, JGColor.black);
     }
     
     public void startGameOver(){
@@ -98,15 +99,19 @@ public class Platformer extends JGEngine{
     }
     
     public void paintFrameGameOver(){
-        drawString("This is the GameOver screen", pfWidth()/2, 0, 0, null, JGColor.black);
+        drawString("Game Over!", pfWidth()/2, 10, 0, null, JGColor.black);
+        drawString("You lost all lives", pfWidth()/2, 20, 0, null, JGColor.black);
+        drawString("Press Enter to restart or Escape to quit", pfWidth()/2, 30, 0, null, JGColor.black);
     }
     
     public void doFrameGameOver(){
-        if(getKey(KeyShift))
+        if(getKey(KeyEnter))
         {
             clearKey(KeyShift);
             setGameState("InGame");
         }
+        else if(getKey(KeyEsc))
+            exitEngine("Closed Game");
     }
     
     public void checkWin(){
@@ -139,12 +144,12 @@ public class Platformer extends JGEngine{
         private int life;
         private final int jumpSpeed = 2;
         //Constructor
-        PlayerObject(){
+        PlayerObject(int numLives){
             super("Player", true, 30,150,1,"myanim_l1");
             xspeed=0;
             yspeed=0;
             hitJumpApex = false;
-            life = 3;
+            life = numLives;
         }
         
         public void move() 
@@ -203,10 +208,13 @@ public class Platformer extends JGEngine{
         public void hit(JGObject obj) {
             if (checkCollision(3,-1.0,-1.0)==0) {
                 if (player.life==1)
-                //put game over gamestate change here
+                    setGameState("GameOver");
+                else
+                {
                     player.life--;
                     player.remove();
-                //put player restart game state change here
+                    player = new PlayerObject(life);
+                }
             }
         }
         
