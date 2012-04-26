@@ -11,12 +11,14 @@ public class Platformer extends JGEngine{
     private boolean playerWin;		//boolean flag to see if the player has won
     public boolean gameStart;
     private EnemyObject enemy;
+    private String gameState;
     
     public Platformer(JGPoint size){
         initEngine(size.x, size.y);
         player = new PlayerObject();
         enemy = new EnemyObject();
         gameStart = true;
+        gameState = "";
     }
     
     public void initCanvas(){
@@ -33,6 +35,7 @@ public class Platformer extends JGEngine{
     }
     
     public void startStartGame(){
+            gameState = "StartGame";
             removeObjects(null, 0, true);
             clearKey(KeyEnter);
     }
@@ -55,6 +58,7 @@ public class Platformer extends JGEngine{
     public void startInGame(){
         //player = new PlayerObject();
         //enemy = new EnemyObject();
+        gameState = "InGame";
         setTiles(0,11, new String[] {"###############"});
         setTiles(7, 9, new String[] {"#####"});
         setTileSettings("#", 2, 0);
@@ -67,6 +71,10 @@ public class Platformer extends JGEngine{
 			1+2, // collide with the ground and border tiles
 			1    // cids of our objects
 		);
+        checkCollision(
+                1, // cids of objects that our objects should collide with
+                3  // cids of the objects whose hit() should be called
+        );
         checkDeath();
     }
     
@@ -84,6 +92,7 @@ public class Platformer extends JGEngine{
     }
     
     public void startGameOver(){
+        gameState = "GameOver";
         removeObjects(null, 0, true);
         clearKey(KeyShift);
     }
@@ -127,7 +136,7 @@ public class Platformer extends JGEngine{
     public class PlayerObject extends JGObject{
         private boolean hitJumpApex; //boolean to tell us when to stop going up and start coming down
 					//from a jump
-        private int lives;
+        private int life;
         private final int jumpSpeed = 2;
         //Constructor
         PlayerObject(){
@@ -135,7 +144,7 @@ public class Platformer extends JGEngine{
             xspeed=0;
             yspeed=0;
             hitJumpApex = false;
-            lives = 3;
+            life = 3;
         }
         
         public void move() 
@@ -190,11 +199,21 @@ public class Platformer extends JGEngine{
                         
                         
         }
+
+        public void hit(JGObject obj) {
+            if (checkCollision(3,-1.0,-1.0)==0) {
+                if (player.life==1)
+                //put game over gamestate change here
+                    player.life--;
+                    player.remove();
+                //put player restart game state change here
+            }
+        }
         
         private void fall(){
                 if(!and(checkBGCollision(0,0),3))
                 {
-                    player.yspeed = jumpSpeed;// = player.y+1;
+                    player.yspeed = jumpSpeed;
                 }
                 else
                     player.yspeed = 0;
