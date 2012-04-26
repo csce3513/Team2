@@ -50,18 +50,32 @@ public class Platformer extends JGEngine{
     }
     
     public void paintFrameStartGame(){
-        drawString("Welcome to Definitely Not Mario!", pfWidth()/2, 20, 0, null, JGColor.black);
+        drawString("Welcome to Definitely Not Mario!", getWidth()/2, 20, 0, null, JGColor.black);
         drawString("Press Enter to Begin!", pfWidth()/2, 30, 0, null, JGColor.black);
 
     }
     
+    //--------------------------------------------------------------
+    // Game State: InGame
+    // Called: When the game begins or restarts
+    // Calls: GameOver (when all lives lost) or
+    //        WinGame (when goal is reached)
+    //--------------------------------------------------------------
+    
     public void startInGame(){
-        //player = new PlayerObject();
-        //enemy = new EnemyObject();
+        removeObjects(null, 0);
+        player = new PlayerObject(3);
+        enemy = new EnemyObject();
         gameState = "InGame";
         setTiles(0,11, new String[] {"###############"});
         setTiles(7, 9, new String[] {"#####"});
         setTileSettings("#", 2, 0);
+    }
+        
+    public void paintFrameInGame(){
+		//This method holds anything we need to draw every frame
+        drawString("Score : 0", 0, 5, -1, null, JGColor.black);
+        drawString("Lives : " + player.life, pfWidth()-3, 5, 1, null, JGColor.black);
     }
     
     public void doFrameInGame(){
@@ -90,12 +104,13 @@ public class Platformer extends JGEngine{
         return gameState;
     }
     
-    public void paintFrameInGame(){
-		//This method holds anything we need to draw every frame
-        drawString("Score : 0", 0, 5, -1, null, JGColor.black);
-        drawString("Lives : " + player.life, 0, 5, 1, null, JGColor.black);
-    }
-    
+
+ 
+    //--------------------------------------------------------------
+    // Game State: GameOver
+    // Called: When the player loses all lives
+    // Calls: InGame state or exits
+    //--------------------------------------------------------------
     public void startGameOver(){
         gameState = "GameOver";
         removeObjects(null, 0, true);
@@ -118,12 +133,30 @@ public class Platformer extends JGEngine{
             exitEngine("Closed Game");
     }
     
+    //--------------------------------------------------------------
+    // Game State: Win Game
+    // Called: When the player reaches the goal point of the level
+    // Calls: InGame state or exits
+    //--------------------------------------------------------------
+    
+    public void startWinGame(){
+        
+    }
+    
+    public void paintFrameWinGame(){
+        
+    }
+    
+    public void doFrameWinGame(){
+        
+    }
+    
     public void checkWin(){
         //System.out.println("In checkWin()");
         if(player.x >= 500.0)
         {
             playerWin = true;
-            //setGameState("WinGame");
+            setGameState("WinGame");
         }
     }
     
@@ -218,7 +251,7 @@ public class Platformer extends JGEngine{
         }
 
         public void hit(JGObject obj) {
-            if (checkCollision(3,-1.0,-1.0)==0) {
+            if ((checkCollision(3,-1.0,-1.0)==0) || (checkCollision(3,1.0,-1.0)==0)) {
                 if (player.life==1)
                     setGameState("GameOver");
                 else
