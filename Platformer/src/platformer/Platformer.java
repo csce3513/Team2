@@ -7,7 +7,7 @@ public class Platformer extends JGEngine{
     private PlayerObject player;
     private double jumpBase = 3000.0; //The position where the player was when a jump starts
                                         //initialized so far down in order to allow player to fall first time
-    private final double maxJump = 40.0; //The maximum height for our player to jump
+    private final double maxJump = 50.0; //The maximum height for our player to jump
     private boolean playerWin;		//boolean flag to see if the player has won
     public boolean gameStart;
     private EnemyObject enemy;
@@ -128,6 +128,7 @@ public class Platformer extends JGEngine{
         private boolean hitJumpApex; //boolean to tell us when to stop going up and start coming down
 					//from a jump
         private int lives;
+        private final int jumpSpeed = 2;
         //Constructor
         PlayerObject(){
             super("Player", true, 30,150,1,"myanim_l1");
@@ -143,9 +144,11 @@ public class Platformer extends JGEngine{
             //This gives us finer control over player position, and allows
             //the player object to stop moving as soon as the button is released
             if(getKey(KeyRight))
-                player.x=player.x+1;
+                player.xspeed = 1;
             if(getKey(KeyLeft))
-                player.x=player.x-1;
+                player.xspeed = -1;
+            if(!(getKey(KeyRight)||getKey(KeyLeft)))
+                player.xspeed = 0;
 				
             //KeyUp is the jump key
             //It is important to remember that y values INCREASE as we go DOWN the screen
@@ -157,7 +160,7 @@ public class Platformer extends JGEngine{
                 //if we're below the max height and we haven't hit the apex,
                 //keep going up
                 if((player.y > jumpBase - maxJump)&&!hitJumpApex)
-                    player.y=player.y-1;
+                    player.yspeed = -jumpSpeed;
                 //If we're still above where we started the jump and
                 //we previously hit the apex, we come back down
                 else if((player.y < jumpBase)&&hitJumpApex)
@@ -191,8 +194,10 @@ public class Platformer extends JGEngine{
         private void fall(){
                 if(!and(checkBGCollision(0,0),3))
                 {
-                    player.y = player.y+1;
+                    player.yspeed = jumpSpeed;// = player.y+1;
                 }
+                else
+                    player.yspeed = 0;
         }
     }
 
