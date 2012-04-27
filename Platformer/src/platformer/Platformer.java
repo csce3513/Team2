@@ -32,8 +32,8 @@ public class Platformer extends JGEngine{
         
         setFrameRate(50,4);        
         defineMedia("Platformer.tbl");
-        setBGImage("background");
-        setGameState("InGame");        
+        setBGImage("background");   
+        setGameState("StartGame"); 
         setTiles(0,30, new String[] {"##########"});
         setTiles(9, 26, new String[] {"#######"});
         setTiles(17, 23, new String[] {"#######"});
@@ -44,7 +44,10 @@ public class Platformer extends JGEngine{
         setTiles(48, 30, new String[] {"#######"});
         setTiles(52, 26, new String[] {"#######"});
         setTiles(60, 30, new String[] {"##################"});
+        setTiles(0,11, new String[] {"###############"});
+        setTiles(7, 9, new String[] {"#####"});
         setTileSettings("#", 2, 0);
+        
     }
     public void startStartGame(){
             gameState = "StartGame";
@@ -62,7 +65,7 @@ public class Platformer extends JGEngine{
     }
     
     public void paintFrameStartGame(){
-        drawString("Welcome to Definitely Not Mario!", getWidth()/2, 20, 0, null, JGColor.black);
+        drawString("Welcome to Definitely Not Mario!", pfWidth()/2, 20, 0, null, JGColor.black);
         drawString("Press Enter to Begin!", pfWidth()/2, 30, 0, null, JGColor.black);
 
     }
@@ -79,9 +82,6 @@ public class Platformer extends JGEngine{
         player = new PlayerObject(3);
         enemy = new EnemyObject();
         gameState = "InGame";
-        setTiles(0,11, new String[] {"###############"});
-        setTiles(7, 9, new String[] {"#####"});
-        setTileSettings("#", 2, 0);
     }
         
     public void paintFrameInGame(){
@@ -139,7 +139,7 @@ public class Platformer extends JGEngine{
         if(getKey(KeyEnter))
         {
             clearKey(KeyShift);
-            setGameState("InGame");
+            setGameState("StartGame");
         }
         else if(getKey(KeyEsc))
             exitEngine("Closed Game");
@@ -191,6 +191,8 @@ public class Platformer extends JGEngine{
 					//from a jump
         private int life;
         private final int jumpSpeed = 2;
+        private boolean jumping;
+        private int jumpCount;
         //Constructor
         PlayerObject(int numLives){
             super("Player", true, 30,150,1,"myanim_l1");
@@ -198,6 +200,8 @@ public class Platformer extends JGEngine{
             yspeed=0;
             hitJumpApex = false;
             life = numLives;
+            jumping = false;
+            jumpCount = 0;
         }
         public int getLife(){
             return life;
@@ -225,44 +229,58 @@ public class Platformer extends JGEngine{
             if(getKey(KeyUp))
             {
                 
-                if(player.y == jumpBase)                    
-                    playAudio("jump"); 
-                //if the player's position is now at the apex of the jump, we set the flag
-                if(player.y <= jumpBase - maxJump)
-                    hitJumpApex = true;
-                //if we're below the max height and we haven't hit the apex,
-                //keep going up
-                if((player.y > jumpBase - maxJump)&&!hitJumpApex)
-                    player.y = player.y - jumpSpeed;
-                //If we're still above where we started the jump and
-                //we previously hit the apex, we come back down
-                else if((player.y < jumpBase)&&hitJumpApex)
-                    fall();
+                if(jumping){
+                    if(player.y >= jumpBase){
+                        if(player.y == jumpBase)
+                            playAudio("jump");
+                        fall();
+                    }
+                    
+                    if(player.y <= jumpBase - maxJump){
+                         
+                        hitJumpApex = true;
+                        fall();
+                    }
+                    else if((player.y < jumpBase)&&hitJumpApex)
+                        fall();
+                    else if((player.y > jumpBase - maxJump)&&!hitJumpApex&&(jumpCount<=1)){
+                        
+                        player.yspeed = -2;
+                    }
+                }
+                else
+                    jumping = true;
                 
                                
-               
+               jumpCount++;
             }
             //This covers us when we release the jump key in the middle of a jump
-            if(!getKey(KeyUp))
+           if(!getKey(KeyUp))
             //If we're not at the jump base whenever the UP key isn't pressed,
             fall();
         }
 
           public void hit_bg(int tilecid) {
 
-            if (and(checkBGCollision(0,player.y + 16),3)) {
+            if (and(checkBGCollision(0,0),3)) {
                     jumpBase = player.y;
                     hitJumpApex = false;
+                    System.out.println("on a block");
 
-            } else if (and(checkBGCollision(player.x+16,0),3)) {
+           } /*else if (and(checkBGCollision(16,0),3)) {
                     player.x--;
+                    //System.out.println("Offset of +16 x");
 
-            } else if (and(checkBGCollision(player.x-16, 0),3)) {
+            }else if (and(checkBGCollision(-1, 0),3)) {
                     player.x++;
+                    System.out.println("Offset of -16 x");
 
-            } else if (and(checkBGCollision(0,player.y-16), 3)){
+            } */else if (and(checkBGCollision(0,0), 3)){
                 fall();
+                System.out.println("No offset");
             }
+                 
+                    
                         
                         
         }
@@ -270,10 +288,24 @@ public class Platformer extends JGEngine{
         private void fall(){
                 if(!and(checkBGCollision(0,0),3))
                 {
-                    player.y = player.y + jumpSpeed;
+                    player.yspeed = jumpSpeed;
                 }
+                else{
+                    System.out.println("Definitely on a block");
+                    jumping = false;
+                    player.yspeed = 0;
+                    jumpCount = 0;
+                }
+                if(player.y > 500)
+                {
+                    player.life--;
+                    player.remove();
+                    player = new PlayerObject(life);
+                }
+                    
         }
          public void hit(JGObject obj) {
+             playAudio("mario_die");
             if ((checkCollision(3,-1.0,-1.0)==0) || (checkCollision(3,1.0,-1.0)==0)) {
                 if (player.life==1)
                     setGameState("GameOver");
@@ -292,14 +324,14 @@ public class Platformer extends JGEngine{
             
             //Constructor
             EnemyObject(){
-                super("Enemy",true,400,350,3,"myanim_l2");
-                xspeed=0;
+                super("Enemy",true,440,350,3,"myanim_l2");
+                xspeed=1;
                 yspeed=0;
             }
             public void move(){
-              if(enemy.x<=125)
+              if(enemy.x<=436)
                   enemy.xspeed=1;
-              if(enemy.x>=185)
+              if(enemy.x>=526)
                   enemy.xspeed=-1;
               fall();
             }
