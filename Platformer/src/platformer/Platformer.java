@@ -98,11 +98,13 @@ public class Platformer extends JGEngine{
         enemy3 = new EnemyObject(1000, 430);
         gameState = "InGame";
         leftFrame = 3000;
+       
     }
         
     public void paintFrameInGame(){
         //This method holds anything we need to draw every frame
-        drawString("Score : 0", 0, 5, -1, null, JGColor.black);
+        this.computeScore();
+        drawString("Score : " + player.getScore(), 0, 5, -1, null, JGColor.black);
         drawString("Lives : " + player.life, pfWidth()-3, 5, 1, null, JGColor.black);
         drawImage(1150, 450, "myanim_l3");
         leftFrame--;
@@ -133,6 +135,7 @@ public class Platformer extends JGEngine{
 				// the alarm method is called when the timer ticks to zero
 				public void alarm() {
 					setGameState("TimeUp");
+                                        removeObjects(null, 0, true);
 				}
 			};
     }
@@ -161,7 +164,8 @@ public class Platformer extends JGEngine{
     public void paintFrameGameOver(){
         drawString("Game Over!", pfWidth()/2, 10, 0, null, JGColor.black);
         drawString("You lost all lives", pfWidth()/2, 30, 0, null, JGColor.black);
-        drawString("Press Enter to restart or Escape to quit", pfWidth()/2, 50, 0, null, JGColor.black);
+        drawString("            Your Score was: " + player.getScore(),pfWidth()/2, 60, 0, null, JGColor.black);
+        drawString("Press Enter to restart or Escape to quit", pfWidth()/2, 90, 0, null, JGColor.black);
     }
     
     public void doFrameGameOver(){
@@ -173,13 +177,19 @@ public class Platformer extends JGEngine{
         else if(getKey(KeyEsc))
             exitEngine("Closed Game");
     }
+    //--------------------------------------------------------------
+    // Game State: TimeUP
+    // Called: When the 60 sec are over before win or lost
+    // Calls: InGame state or exits
+    //--------------------------------------------------------------
       public void startTimeUP(){
         gameState = "TimeUp";
-        removeObjects(null, 0, true);
+       
     }
      public void paintFrameTimeUp(){
         drawString("Your Time has Expired!", pfWidth()/2, 10, 0, null, JGColor.black);
-        drawString("Press Enter to restart or Escape to quit", pfWidth()/2, 50, 0, null, JGColor.black);
+        drawString("            Your Score was: " + player.getScore(),pfWidth()/2, 40, 0, null, JGColor.black);
+        drawString("Press Enter to restart or Escape to quit", pfWidth()/2, 70, 0, null, JGColor.black);
     }
     
     public void doFrameTimeUp(){
@@ -205,12 +215,18 @@ public class Platformer extends JGEngine{
     
     public void paintFrameWinGame(){
         drawString("Your princess is in another....I mean, you won!", pfWidth()/2, 30, 0, null, JGColor.black);
-        drawString("Press Enter to start again! Or Esc to Exit", pfWidth()/2, 60, 0, null, JGColor.black);
+        drawString("            Your  Final Score is: " + player.getScore(),pfWidth()/2, 60, 0, null, JGColor.black);
+        drawString("Press Enter to start again! Or Esc to Exit", pfWidth()/2, 90, 0, null, JGColor.black);
     }
     
     public void doFrameWinGame(){
         if(getKey(KeyEnter))
+        {
             setGameState("StartGame");
+            player.setScore(0);
+            player.tempScore = 0;
+            this.playerWin = false;
+        }
         else if(getKey(KeyEsc))
             exitEngine(null);
         
@@ -230,13 +246,34 @@ public class Platformer extends JGEngine{
    
     public boolean getPlayerWin(){
         return playerWin;
-    }
-    
-    public static void main() {
-        new Platformer(new JGPoint(640,480));
-    }
-    
+    } 
+    //--------------------------------------------------------------
+    // Method : computeScore
+    // Called:  To Compute the score during and at the end of the game
+    // Called: in InGame state
+    //--------------------------------------------------------------
 
+    public void computeScore()
+    {
+        if(player.x>1000)
+            player.setPos(3);
+        else if(player.x > 470)
+            player.setPos(2);
+        else if(player.x > 310)
+            player.setPos(1);
+        else if(player.x <= 310)
+            player.setPos(0);
+        player.tempScore = (int) ((player.pos * player.life * 7) + (12 * (player.x/1150)));
+        if(this.playerWin )
+              {
+                  if(leftSec >= 30)
+               player.tempScore += 25; //if you win in 30 sec or less you get the max bonus points
+                  else if(leftSec < 30)
+                      player.tempScore += 25*leftSec/30;
+               }
+        if(player.getScore() < player.tempScore)
+            player.setScore(player.tempScore);
+    }
     //Player class currently in Engine class in order to use draw methods
     public class PlayerObject extends JGObject{
         private boolean hitJumpApex; //boolean to tell us when to stop going up and start coming down
@@ -246,6 +283,8 @@ public class Platformer extends JGEngine{
         private boolean jumping;
         private int jumpCount;
         private int score;
+        private int tempScore;
+        private int pos; //# of enemy the player has passed
         //Constructor
         PlayerObject(int numLives){
             super("Player", true, 30,150,1,"myanim_l1");
@@ -256,6 +295,8 @@ public class Platformer extends JGEngine{
             jumping = false;
             jumpCount = 0;
             score = 0;
+            pos = 0;
+            tempScore = 0;
         }
         public int getLife(){
             return life;
@@ -272,6 +313,14 @@ public class Platformer extends JGEngine{
        public int getScore()
        {
            return score;
+       }
+       public void setPos( int Pos)
+        {
+            pos = Pos;
+        }
+       public int getPos()
+       {
+           return pos;
        }
         
         public void move() 
@@ -369,6 +418,7 @@ public class Platformer extends JGEngine{
                 }
             }
         }
+         
     }
 
      //Enemy Class
