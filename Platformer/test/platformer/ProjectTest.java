@@ -141,14 +141,14 @@ assertEquals(150.0,testPlat.getPlayer().y, 0.5);
             //testPlat.doFrame();
             testPlat.getPlayer().move();
         }
-        assertEquals(128.0, testPlat.getPlayer().y, 0.5);
+        assertEquals(150.0, testPlat.getPlayer().y, 0.5);
         testPlat.clearKey(38);
         //This for loop should land the player back where it started
         for(int i=0; i<12; i++){
             //testPlat.doFrame();
             testPlat.getPlayer().move();
         }
-        assertEquals(104.0, testPlat.getPlayer().y, 0.5);
+        assertEquals(150.0, testPlat.getPlayer().y, 0.5);
     }
 
 /**

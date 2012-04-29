@@ -15,6 +15,8 @@ public class Platformer extends JGEngine{
     private boolean playerWin;		//boolean flag to see if the player has won
     public boolean gameStart;
     private EnemyObject enemy;
+    private EnemyObject enemy2;
+    private EnemyObject enemy3;
     private String gameState;
     private int numEnemies;
     private Random gen = new Random();
@@ -22,7 +24,9 @@ public class Platformer extends JGEngine{
     public Platformer(JGPoint size){
         initEngine(size.x, size.y);
         player = new PlayerObject(3);
-        enemy = new EnemyObject(15);
+        enemy = new EnemyObject(15,5345);
+        enemy3 = new EnemyObject(15,5345);
+        enemy2 = new EnemyObject(15,5345);
         gameStart = true;
         gameState = "";
         numEnemies = 3;
@@ -31,7 +35,6 @@ public class Platformer extends JGEngine{
     public void initCanvas(){
         //This method holds anything we need to initialize
         setCanvasSettings(80,35,16,16,null,null,null);
-        //System.out.println("In initCanvas()");
     }
     
     public void initGame(){
@@ -45,7 +48,7 @@ public class Platformer extends JGEngine{
         setTiles(9, 26, new String[] {"#######"});
         setTiles(17, 23, new String[] {"#######"});
         setTiles(20,30, new String[] {"##########"});
-        setTiles(27, 26, new String[] {"#######"});
+        setTiles(27, 26, new String[] {"#######.....###"});
         setTiles(32,30, new String[] {"##########"}); 
         setTiles(44, 23, new String[] {"#######"});
         setTiles(48, 30, new String[] {"#######"});
@@ -57,6 +60,7 @@ public class Platformer extends JGEngine{
         
     }
     public void startStartGame(){
+            clearKey(KeyEsc);
             gameState = "StartGame";
             removeObjects(null, 0, true);
             clearKey(KeyEnter);
@@ -69,11 +73,13 @@ public class Platformer extends JGEngine{
             //addGameState("InGame");
             setGameState("InGame");
         }
+        else if(getKey(KeyEsc))
+            exitEngine(null);
     }
     
     public void paintFrameStartGame(){
         drawString("Welcome to Definitely Not Mario!", pfWidth()/2, 20, 0, null, JGColor.black);
-        drawString("Press Enter to Begin!", pfWidth()/2, 30, 0, null, JGColor.black);
+        drawString("Press Enter to Begin! Or ESC to exit", pfWidth()/2, 50, 0, null, JGColor.black);
 
     }
     
@@ -87,17 +93,18 @@ public class Platformer extends JGEngine{
     public void startInGame(){
         removeObjects(null, 0);
         player = new PlayerObject(3);
-        enemy = new EnemyObject(470);
-        //new EnemyObject(300);
-        //new EnemyObject(760);
+        enemy = new EnemyObject(470, 350);
+        enemy2 = new EnemyObject(310, 300);
+        enemy3 = new EnemyObject(1000, 430);
         gameState = "InGame";
     }
         
     public void paintFrameInGame(){
-		//This method holds anything we need to draw every frame
+        //This method holds anything we need to draw every frame
         drawString("Score : 0", 0, 5, -1, null, JGColor.black);
         drawString("Lives : " + player.life, pfWidth()-3, 5, 1, null, JGColor.black);
         drawImage(1150, 450, "myanim_l3");
+        drawString("Something", 0, 480, 0, null, JGColor.black);
     }
 
    
@@ -114,8 +121,8 @@ public class Platformer extends JGEngine{
 			3  // cids of the objects whose hit() should be called
 		);
         checkDeath();
-        
-        //System.out.println("In doFrame()");
+        if(getKey(KeyEsc))
+            setGameState("StartGame");
     }
     
     public PlayerObject getPlayer(){
@@ -141,8 +148,8 @@ public class Platformer extends JGEngine{
     
     public void paintFrameGameOver(){
         drawString("Game Over!", pfWidth()/2, 10, 0, null, JGColor.black);
-        drawString("You lost all lives", pfWidth()/2, 20, 0, null, JGColor.black);
-        drawString("Press Enter to restart or Escape to quit", pfWidth()/2, 30, 0, null, JGColor.black);
+        drawString("You lost all lives", pfWidth()/2, 30, 0, null, JGColor.black);
+        drawString("Press Enter to restart or Escape to quit", pfWidth()/2, 50, 0, null, JGColor.black);
     }
     
     public void doFrameGameOver(){
@@ -162,18 +169,23 @@ public class Platformer extends JGEngine{
     //--------------------------------------------------------------
     
     public void startWinGame(){
+        removeObjects(null, 0, true);
         
     }
     
     public void paintFrameWinGame(){
-        
+        drawString("Your princess is in another....I mean, you won!", pfWidth()/2, 30, 0, null, JGColor.black);
+        drawString("Press Enter to start again! Or Esc to Exit", pfWidth()/2, 60, 0, null, JGColor.black);
     }
     
     public void doFrameWinGame(){
+        if(getKey(KeyEnter))
+            setGameState("StartGame");
+        else if(getKey(KeyEsc))
+            exitEngine(null);
         
     }
    public void checkWin(){
-        //System.out.println("In checkWin()");
         if(player.x >= 1150.0)
         {
             playerWin = true;
@@ -224,7 +236,7 @@ public class Platformer extends JGEngine{
         
         public void move() 
         {
-             //Instead of using x or yspeed, we alter position ourselves
+            //Instead of using x or yspeed, we alter position ourselves
             //This gives us finer control over player position, and allows
             //the player object to stop moving as soon as the button is released
             if(getKey(KeyRight))
@@ -266,35 +278,23 @@ public class Platformer extends JGEngine{
             }
             //This covers us when we release the jump key in the middle of a jump
            if(!getKey(KeyUp))
-            //If we're not at the jump base whenever the UP key isn't pressed,
-            fall();
+               //If we're not at the jump base whenever the UP key isn't pressed,
+               fall();
         }
         
           public void hit_bg(int tilecid) {
 
-            if (and(checkBGCollision(0,1),3)) {
-                
+           if (and(checkBGCollision(0,1),3)) {
+                if(((player.y >= 460)&&(player.y <= 496)) || ((player.y >= 396)&&(player.y <= 432)) || ((player.y >= 348)&&(player.y<= 384)) || ((player.y >= 108)&&(player.y<=144))){
+                    player.y+=5;
+                    fall();
+                }
+                else
                     jumpBase = player.y;
                     hitJumpApex = false;
                     System.out.println("on a block\njumpBase: " + jumpBase + "\nplayer.y: " + player.y);
 
-           } else if (and(checkBGCollision(1,0),3)) {
-                    if(player.y < jumpBase)
-                        player.y += 5;
-                    System.out.println("Hit block on top\njumpBase: " + jumpBase+ "\nplayer.y: " + player.y);
-
-            }/*else if (and(checkBGCollision(-1, 0),3)) {
-                    player.x++;
-                    System.out.println("Offset of -16 x");
-
-            } */else if (and(checkBGCollision(0,0), 3)){
-                fall();
-                System.out.println("No offset");
-            }
-                 
-                    
-                        
-                        
+           }                                           
         }
         
         private void fall(){
@@ -337,28 +337,26 @@ public class Platformer extends JGEngine{
         private int moveRange;
         private int initPos;
             //Constructor
-            EnemyObject(int initPos){
-                super("Enemy",true,initPos,350,3,"myanim_l2");
+            EnemyObject(int initPos, int initY){
+                super("Enemy",true,initPos,initY,3,"myanim_l2");
                 xspeed=1;
                 yspeed=0;
                 moveRange = 50;
                 this.initPos = initPos;
 
             }
+            
             public void move(){
-              if(enemy.x<=(initPos - moveRange))
-                  enemy.xspeed=1;
-              if(enemy.x>=(initPos + moveRange))
-                  enemy.xspeed=-1;
+              if(this.x<=(initPos - moveRange))
+                  this.xspeed=1;
+              if(this.x>=(initPos + moveRange))
+                  this.xspeed=-1;
               fall();
             }
                
             private void fall(){
                 if(!and(checkBGCollision(0,0),3))
-                    enemy.y = enemy.y+1;
+                    this.y +=1;
             }
         }
-   
-    
-    
 }

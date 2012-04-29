@@ -1,16 +1,3 @@
- ______       ______   _____   _______   __       _
-|   _  \     |  ____| |  ___| |__   __| |  \     | | 
-|  | \  \    | |      | |        | |    |   \    | |
-|  |  \  \   | |___   | |__      | |    | |\ \   | |
-|  |   |  |  |  ___|  |  __|     | |    | | \ \  | |
-|  |  /  /   | |      | |        | |    | |  \ \ | |
-|  |_/  /    | |____  | |      __| |__  | |   \ \| |
-|______/     |______| |_|     |_______| |_|    \___|
-
-
-
-Change!
-
 Definitely Not Mario
 Juan Rios
 Denis Rugira
@@ -18,3 +5,6 @@ Andrew Johnson
 Jean Pierre Habimana
 
 This game is a simple platformer made in Java using the JGame engine for a Software Engineering class at the University of Arkansas.
+
+To play, download the NotMario.jar file located under the master branch -> Final Release
+After downloading, open a command-line interface and navigate to the directory it is saved in and use the command "java -jar NotMario" to play!
