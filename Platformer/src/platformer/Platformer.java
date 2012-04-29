@@ -22,7 +22,7 @@ public class Platformer extends JGEngine{
     public Platformer(JGPoint size){
         initEngine(size.x, size.y);
         player = new PlayerObject(3);
-        enemy = new EnemyObject(15);
+        enemy = new EnemyObject(15,5345);
         gameStart = true;
         gameState = "";
         numEnemies = 3;
@@ -73,7 +73,7 @@ public class Platformer extends JGEngine{
     
     public void paintFrameStartGame(){
         drawString("Welcome to Definitely Not Mario!", pfWidth()/2, 20, 0, null, JGColor.black);
-        drawString("Press Enter to Begin!", pfWidth()/2, 30, 0, null, JGColor.black);
+        drawString("Press Enter to Begin!", pfWidth()/2, 50, 0, null, JGColor.black);
 
     }
     
@@ -87,9 +87,9 @@ public class Platformer extends JGEngine{
     public void startInGame(){
         removeObjects(null, 0);
         player = new PlayerObject(3);
-        enemy = new EnemyObject(470);
-        //new EnemyObject(300);
-        //new EnemyObject(760);
+        enemy = new EnemyObject(470, 350);
+        //new EnemyObject(300, 300);
+       //new EnemyObject(760, 300);
         gameState = "InGame";
     }
         
@@ -141,8 +141,8 @@ public class Platformer extends JGEngine{
     
     public void paintFrameGameOver(){
         drawString("Game Over!", pfWidth()/2, 10, 0, null, JGColor.black);
-        drawString("You lost all lives", pfWidth()/2, 20, 0, null, JGColor.black);
-        drawString("Press Enter to restart or Escape to quit", pfWidth()/2, 30, 0, null, JGColor.black);
+        drawString("You lost all lives", pfWidth()/2, 30, 0, null, JGColor.black);
+        drawString("Press Enter to restart or Escape to quit", pfWidth()/2, 50, 0, null, JGColor.black);
     }
     
     public void doFrameGameOver(){
@@ -162,14 +162,20 @@ public class Platformer extends JGEngine{
     //--------------------------------------------------------------
     
     public void startWinGame(){
+        removeObjects(null, 0, true);
         
     }
     
     public void paintFrameWinGame(){
-        
+        drawString("Your princess is in another....I mean, you won!", pfWidth()/2, 30, 0, null, JGColor.black);
+        drawString("Press Enter to start again! Or Esc to Exit", pfWidth()/2, 60, 0, null, JGColor.black);
     }
     
     public void doFrameWinGame(){
+        if(getKey(KeyEnter))
+            setGameState("StartGame");
+        else if(getKey(KeyEsc))
+            exitEngine(null);
         
     }
    public void checkWin(){
@@ -337,8 +343,8 @@ public class Platformer extends JGEngine{
         private int moveRange;
         private int initPos;
             //Constructor
-            EnemyObject(int initPos){
-                super("Enemy",true,initPos,350,3,"myanim_l2");
+            EnemyObject(int initPos, int initY){
+                super("Enemy",true,initPos,initY,3,"myanim_l2");
                 xspeed=1;
                 yspeed=0;
                 moveRange = 50;
@@ -351,6 +357,7 @@ public class Platformer extends JGEngine{
               if(enemy.x>=(initPos + moveRange))
                   enemy.xspeed=-1;
               fall();
+              
             }
                
             private void fall(){
