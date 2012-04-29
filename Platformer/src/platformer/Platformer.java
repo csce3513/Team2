@@ -1,5 +1,5 @@
-//Remember: Audio for death
-//  player xspeed to 1
+package platformer;
+
 
 import jgame.*;
 import jgame.platform.*;
@@ -399,7 +399,8 @@ public class Platformer extends JGEngine{
                 }
                 if(player.y > 500)
                 {
-                    player.life--;
+                   //playAudio("mario_die");
+                   player.life--;
                     player.remove();
                     player = new PlayerObject(life);
                 }
@@ -412,6 +413,7 @@ public class Platformer extends JGEngine{
                     setGameState("GameOver");
                 else
                 {
+                    
                     player.life--;
                     player.remove();
                     player = new PlayerObject(life);
