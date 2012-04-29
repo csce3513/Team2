@@ -1,7 +1,11 @@
+//Remember: Audio for death
+//  player xspeed to 1
+
 package platformer;
 import jgame.*;
 import jgame.platform.*;
 import javax.swing.JOptionPane;
+import java.util.Random;
 
 public class Platformer extends JGEngine{
     private PlayerObject player;
@@ -12,13 +16,16 @@ public class Platformer extends JGEngine{
     public boolean gameStart;
     private EnemyObject enemy;
     private String gameState;
+    private int numEnemies;
+    private Random gen = new Random();
     
     public Platformer(JGPoint size){
         initEngine(size.x, size.y);
         player = new PlayerObject(3);
-        enemy = new EnemyObject();
+        enemy = new EnemyObject(15);
         gameStart = true;
         gameState = "";
+        numEnemies = 3;
     }
     
     public void initCanvas(){
@@ -45,7 +52,7 @@ public class Platformer extends JGEngine{
         setTiles(52, 26, new String[] {"#######"});
         setTiles(60, 30, new String[] {"##################"});
         setTiles(0,11, new String[] {"###############"});
-        setTiles(7, 9, new String[] {"#####"});
+        setTiles(7, 8, new String[] {"#####"});
         setTileSettings("#", 2, 0);
         
     }
@@ -80,7 +87,9 @@ public class Platformer extends JGEngine{
     public void startInGame(){
         removeObjects(null, 0);
         player = new PlayerObject(3);
-        enemy = new EnemyObject();
+        enemy = new EnemyObject(470);
+        //new EnemyObject(300);
+        //new EnemyObject(760);
         gameState = "InGame";
     }
         
@@ -88,6 +97,7 @@ public class Platformer extends JGEngine{
 		//This method holds anything we need to draw every frame
         drawString("Score : 0", 0, 5, -1, null, JGColor.black);
         drawString("Lives : " + player.life, pfWidth()-3, 5, 1, null, JGColor.black);
+        drawImage(1150, 450, "myanim_l3");
     }
 
    
@@ -118,7 +128,7 @@ public class Platformer extends JGEngine{
     public String getGameState(){
         return gameState;
     }
-        //--------------------------------------------------------------
+    //--------------------------------------------------------------
     // Game State: GameOver
     // Called: When the player loses all lives
     // Calls: InGame state or exits
@@ -164,7 +174,7 @@ public class Platformer extends JGEngine{
     }
    public void checkWin(){
         //System.out.println("In checkWin()");
-        if(player.x >= 990.0)
+        if(player.x >= 1150.0)
         {
             playerWin = true;
             setGameState("WinGame");
@@ -218,9 +228,9 @@ public class Platformer extends JGEngine{
             //This gives us finer control over player position, and allows
             //the player object to stop moving as soon as the button is released
             if(getKey(KeyRight))
-                player.x++;
+                player.x +=1;
             if(getKey(KeyLeft))
-                player.x--;
+                player.x -= 1;
             if(!(getKey(KeyRight)||getKey(KeyLeft)))
                 player.xspeed = 0;
             
@@ -259,19 +269,21 @@ public class Platformer extends JGEngine{
             //If we're not at the jump base whenever the UP key isn't pressed,
             fall();
         }
-
+        
           public void hit_bg(int tilecid) {
 
-            if (and(checkBGCollision(0,0),3)) {
+            if (and(checkBGCollision(0,1),3)) {
+                
                     jumpBase = player.y;
                     hitJumpApex = false;
-                    System.out.println("on a block");
+                    System.out.println("on a block\njumpBase: " + jumpBase + "\nplayer.y: " + player.y);
 
-           } /*else if (and(checkBGCollision(16,0),3)) {
-                    player.x--;
-                    //System.out.println("Offset of +16 x");
+           } else if (and(checkBGCollision(1,0),3)) {
+                    if(player.y < jumpBase)
+                        player.y += 5;
+                    System.out.println("Hit block on top\njumpBase: " + jumpBase+ "\nplayer.y: " + player.y);
 
-            }else if (and(checkBGCollision(-1, 0),3)) {
+            }/*else if (and(checkBGCollision(-1, 0),3)) {
                     player.x++;
                     System.out.println("Offset of -16 x");
 
@@ -291,7 +303,7 @@ public class Platformer extends JGEngine{
                     player.yspeed = jumpSpeed;
                 }
                 else{
-                    System.out.println("Definitely on a block");
+                    //System.out.println("Definitely on a block");
                     jumping = false;
                     player.yspeed = 0;
                     jumpCount = 0;
@@ -305,7 +317,7 @@ public class Platformer extends JGEngine{
                     
         }
          public void hit(JGObject obj) {
-             playAudio("mario_die");
+            //playAudio("mario_die");
             if ((checkCollision(3,-1.0,-1.0)==0) || (checkCollision(3,1.0,-1.0)==0)) {
                 if (player.life==1)
                     setGameState("GameOver");
@@ -321,17 +333,22 @@ public class Platformer extends JGEngine{
 
      //Enemy Class
     public class EnemyObject extends JGObject{
-            
+       
+        private int moveRange;
+        private int initPos;
             //Constructor
-            EnemyObject(){
-                super("Enemy",true,440,350,3,"myanim_l2");
+            EnemyObject(int initPos){
+                super("Enemy",true,initPos,350,3,"myanim_l2");
                 xspeed=1;
                 yspeed=0;
+                moveRange = 50;
+                this.initPos = initPos;
+
             }
             public void move(){
-              if(enemy.x<=436)
+              if(enemy.x<=(initPos - moveRange))
                   enemy.xspeed=1;
-              if(enemy.x>=526)
+              if(enemy.x>=(initPos + moveRange))
                   enemy.xspeed=-1;
               fall();
             }

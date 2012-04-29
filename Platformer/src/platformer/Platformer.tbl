@@ -43,7 +43,8 @@ myanim_r	myanim_r1;myanim_r2;myanim_r3		0.3		true
 jump	mb_jump.wav
 
 // define the tiles used in example 4
-mytile		#	1	marble16.jpg	-	
+mytile		#	1	marble16.jpg	-
+flagtile	%	5	flag.png	-	
 // "null" indicates the null image, which will show as a transparent tile
 emptytile	.	0	null			-
 
