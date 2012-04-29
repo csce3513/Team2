@@ -18,7 +18,7 @@ public class Platformer extends JGEngine{
     private String gameState;
     private int numEnemies;
     private Random gen = new Random();
-    private  int leftFrame = 300;
+    private  int leftFrame = 3000;
     private int leftSec;
     
     public Platformer(JGPoint size){
@@ -97,6 +97,7 @@ public class Platformer extends JGEngine{
         enemy2 = new EnemyObject(310, 300);
         enemy3 = new EnemyObject(1000, 430);
         gameState = "InGame";
+        leftFrame = 3000;
     }
         
     public void paintFrameInGame(){
@@ -125,7 +126,7 @@ public class Platformer extends JGEngine{
         checkDeath();
         if(getKey(KeyEsc))
             setGameState("StartGame");
-        new JGTimer(300, // number of frames to tick until alarm
+        new JGTimer(3000, // number of frames to tick until alarm
 	            true, // true means one-shot, false means run again
 		    "InGame" 
 			) {
@@ -244,6 +245,7 @@ public class Platformer extends JGEngine{
         private final int jumpSpeed = 2;
         private boolean jumping;
         private int jumpCount;
+        private int score;
         //Constructor
         PlayerObject(int numLives){
             super("Player", true, 30,150,1,"myanim_l1");
@@ -253,6 +255,7 @@ public class Platformer extends JGEngine{
             life = numLives;
             jumping = false;
             jumpCount = 0;
+            score = 0;
         }
         public int getLife(){
             return life;
@@ -261,7 +264,15 @@ public class Platformer extends JGEngine{
         public void setLife(int numLives){
             life = numLives;
         }
-       
+        
+        public void setScore( int Score)
+        {
+            score = Score;
+        }
+       public int getScore()
+       {
+           return score;
+       }
         
         public void move() 
         {
