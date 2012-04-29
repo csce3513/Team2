@@ -1,10 +1,8 @@
 //Remember: Audio for death
 //  player xspeed to 1
 
-package platformer;
 import jgame.*;
 import jgame.platform.*;
-import javax.swing.JOptionPane;
 import java.util.Random;
 
 public class Platformer extends JGEngine{
@@ -20,6 +18,8 @@ public class Platformer extends JGEngine{
     private String gameState;
     private int numEnemies;
     private Random gen = new Random();
+    private  int leftFrame = 300;
+    private int leftSec;
     
     public Platformer(JGPoint size){
         initEngine(size.x, size.y);
@@ -104,7 +104,9 @@ public class Platformer extends JGEngine{
         drawString("Score : 0", 0, 5, -1, null, JGColor.black);
         drawString("Lives : " + player.life, pfWidth()-3, 5, 1, null, JGColor.black);
         drawImage(1150, 450, "myanim_l3");
-        drawString("Something", 0, 480, 0, null, JGColor.black);
+        leftFrame--;
+        leftSec = leftFrame/50;
+        drawString( "Time Left: " + leftSec + " Sec", pfWidth()/2, 5, 1, null, JGColor.black);
     }
 
    
@@ -123,6 +125,15 @@ public class Platformer extends JGEngine{
         checkDeath();
         if(getKey(KeyEsc))
             setGameState("StartGame");
+        new JGTimer(300, // number of frames to tick until alarm
+	            true, // true means one-shot, false means run again
+		    "InGame" 
+			) {
+				// the alarm method is called when the timer ticks to zero
+				public void alarm() {
+					setGameState("TimeUp");
+				}
+			};
     }
     
     public PlayerObject getPlayer(){
@@ -153,6 +164,24 @@ public class Platformer extends JGEngine{
     }
     
     public void doFrameGameOver(){
+        if(getKey(KeyEnter))
+        {
+            clearKey(KeyShift);
+            setGameState("StartGame");
+        }
+        else if(getKey(KeyEsc))
+            exitEngine("Closed Game");
+    }
+      public void startTimeUP(){
+        gameState = "TimeUp";
+        removeObjects(null, 0, true);
+    }
+     public void paintFrameTimeUp(){
+        drawString("Your Time has Expired!", pfWidth()/2, 10, 0, null, JGColor.black);
+        drawString("Press Enter to restart or Escape to quit", pfWidth()/2, 50, 0, null, JGColor.black);
+    }
+    
+    public void doFrameTimeUp(){
         if(getKey(KeyEnter))
         {
             clearKey(KeyShift);
