@@ -6,5 +6,7 @@ Jean Pierre Habimana
 
 This game is a simple platformer made in Java using the JGame engine for a Software Engineering class at the University of Arkansas.
 
-To play, download the NotMario.jar file located under the master branch -> Final Release
-After downloading, open a command-line interface and navigate to the directory it is saved in and use the command "java -jar NotMario" to play!
+To play, download the Platformer Game folder located in the master branch
+After downloading, open the folder and double-click the Platformer.jar file. (This assumes you have JDK installed).
+
+Have fun!
