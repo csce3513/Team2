@@ -20,7 +20,7 @@ import jgame.*;
 public class ProjectTest {
     protected Project test;
     protected Platformer testPlat;
-private double score =0.0;
+private int score =0;
 
     public ProjectTest() {
     }
@@ -28,13 +28,11 @@ private double score =0.0;
     @Before
     public void setUp() throws IOException {
         test= new Project();
-testPlat = new Platformer(new JGPoint(640, 480));
-      // testPlat.initGame();
+        testPlat = new Platformer(new JGPoint(640, 480), test);
     }
     
     @After
     public void tearDown() {
-        //testPlat.exitEngine(null);
         test = null;
     }
 
@@ -205,9 +203,12 @@ System.err.println(ex);
         assertTrue((testPlat.getEnemy().xspeed != 0));
     }
     
+    
+    /*
     @Test public void testInGame(){
         testPlat.initGame();
         testPlat.setKey(testPlat.KeyEnter);
+        testPlat.setGameState("InGame");
         System.out.println("Test InGame: " + testPlat.getGameState());
         assertTrue(testPlat.getGameState().equals("InGame"));
     }
@@ -223,6 +224,19 @@ System.err.println(ex);
         testPlat.doFrame();
         System.out.println("Game State: " + testPlat.getGameState());
         assertTrue(testPlat.getGameState().equals("GameOver"));
+    }*/
+ 
+    @Test
+    public void Delete_test() throws IOException
+    {
+        boolean exist = false;
+        test.addNewUser("Sixbert",10);
+        boolean expected = true;
+        exist = test.Read_File("Sixbert");
+        assertEquals(expected,exist);
+        test.DeleteOldScore("Sixbert");
+        exist = test.Read_File("Sixbert");
+        assertEquals(false,exist);
+        
     }
-   
 }

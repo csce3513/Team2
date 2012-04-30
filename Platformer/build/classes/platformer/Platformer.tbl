@@ -40,11 +40,14 @@ myanim_r	myanim_r1;myanim_r2;myanim_r3		0.3		true
 
 
 // define a sound
-jump	mb_jump.wav
+mario_die		smb1mariodie.wav
+jump		mb_jump.wav
+gameover		smw_gameover.wav
+start_up		sm3ow2.mid
+
 
 // define the tiles used in example 4
-mytile		#	1	marble16.jpg	-
-flagtile	%	5	flag.png	-	
+mytile		#	1	marble16.jpg	-	
 // "null" indicates the null image, which will show as a transparent tile
 emptytile	.	0	null			-
 
