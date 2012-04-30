@@ -205,38 +205,24 @@ System.err.println(ex);
         assertTrue((testPlat.getEnemy().xspeed != 0));
     }
     
-   /* @Test public void testInGame(){
-testPlat.initGame();
-testPlat.setGameState("InGame");
-System.out.println("Test InGame: " + testPlat.getGameState());
-assertTrue(testPlat.getGameState().equals("InGame"));
-}
-@Test public void testGameOver(){
-testPlat.initGame();
-testPlat.setGameState("InGame");
-testPlat.getPlayer().setLife(1);
-System.out.println("NumLives : " + testPlat.getPlayer().getLife());
-testPlat.doFrame();
-testPlat.getPlayer().setPos(130.0, 130.0);
-testPlat.getEnemy().setPos(130.0, 130.0);
-testPlat.getPlayer().hit(testPlat.getEnemy());
-testPlat.doFrame();
-System.out.println("Game State: " + testPlat.getGameState());
-assertTrue(testPlat.getGameState().equals("GameOver"));
-}
-*/
-    /**
-* Test of main method, of class Project.
-*/
-    @Test
-    public void testMain() throws Exception {
-        System.out.println("main");
-        String[] args = null;
-        Project.main(args);
-        // TODO review the generated test code and remove the default call to fail.
-        
+    @Test public void testInGame(){
+        testPlat.initGame();
+        testPlat.setKey(testPlat.KeyEnter);
+        System.out.println("Test InGame: " + testPlat.getGameState());
+        assertTrue(testPlat.getGameState().equals("InGame"));
     }
-
-
+    
+    @Test public void testGameOver(){
+        testPlat.initGame();
+        testPlat.setGameState("InGame");
+        testPlat.getPlayer().setLife(0);
+        System.out.println("NumLives : " + testPlat.getPlayer().getLife());
+        testPlat.doFrame();
+        testPlat.getPlayer().setPos(130.0, 520.0);
+        testPlat.getPlayer().fall();
+        testPlat.doFrame();
+        System.out.println("Game State: " + testPlat.getGameState());
+        assertTrue(testPlat.getGameState().equals("GameOver"));
+    }
    
 }
