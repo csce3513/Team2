@@ -6,7 +6,7 @@ Jean Pierre Habimana
 
 This game is a simple platformer made in Java using the JGame engine for a Software Engineering class at the University of Arkansas.
 
-To play, download the Platformer Game folder located in the master branch
-After downloading, extract the folder, open it and double-click the Platformer.jar file. (This assumes you have JDK installed).
+To play, download the zipped master branch
+After downloading, extract the folder, navigate to Platformer Game, open it and double-click the Platformer.jar file. (This assumes you have JDK installed).
 
 Have fun!
