@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 package platformer;
 
+=======
+//Remember: Audio for death
+//  player xspeed to 1
+>>>>>>> origin/master
 
 import java.io.IOException;
 import jgame.*;
@@ -23,7 +28,10 @@ public class Platformer extends JGEngine{
     private int leftSec;
     private Project Pj;
     
+<<<<<<< HEAD
     
+=======
+>>>>>>> origin/master
     public Platformer(JGPoint size, Project pj){
         initEngine(size.x, size.y);
         player = new PlayerObject(3);
@@ -65,13 +73,17 @@ public class Platformer extends JGEngine{
     }
     public void startStartGame(){
             clearKey(KeyEsc);
+<<<<<<< HEAD
             playAudio("start_up");
+=======
+>>>>>>> origin/master
             gameState = "StartGame";
             removeObjects(null, 0, true);
             clearKey(KeyEnter);
     }
     
     public void doFrameStartGame(){
+<<<<<<< HEAD
         
         if(getKey(KeyEnter)){
             clearKey(KeyEnter);
@@ -119,6 +131,55 @@ public class Platformer extends JGEngine{
         drawString( "Time Left: " + leftSec + " Sec", pfWidth()/2, 5, 1, null, JGColor.black);
         drawString( "Use keyboard arrows to move", pfWidth()/2, 50, 1, null, JGColor.black);
     }
+=======
+        
+        if(getKey(KeyEnter)){
+            clearKey(KeyEnter);
+            //addGameState("InGame");
+            setGameState("InGame");
+        }
+        else if(getKey(KeyEsc))
+            exitEngine(null);
+    }
+    
+    public void paintFrameStartGame(){
+        drawString("Hello "+ Pj.getUserName(), pfWidth()/2 , 20, 0, null, JGColor.black);
+        drawString("Welcome to Definitely Not Mario!", pfWidth()/2, 50, 0, null, JGColor.black);
+        drawString("Your last score was " + Pj.getUserScore(), pfWidth()/2,80 , 0, null, JGColor.black);
+        drawString("Press Enter to Begin! Or ESC to exit", pfWidth()/2, 110, 0, null, JGColor.black);
+
+    }
+    
+    //--------------------------------------------------------------
+    // Game State: InGame
+    // Called: When the game begins or restarts
+    // Calls: GameOver (when all lives lost) or
+    //        WinGame (when goal is reached)
+    //--------------------------------------------------------------
+    
+    public void startInGame(){
+        removeObjects(null, 0);
+        player = new PlayerObject(3);
+        enemy = new EnemyObject(470, 350);
+        enemy2 = new EnemyObject(310, 300);
+        enemy3 = new EnemyObject(1000, 430);
+        gameState = "InGame";
+        leftFrame = 3000;
+       
+    }
+        
+    public void paintFrameInGame(){
+        //This method holds anything we need to draw every frame
+        this.computeScore();
+        drawString("Score : " + player.getScore(), 0, 5, -1, null, JGColor.black);
+        drawString("Lives : " + player.life, pfWidth()-3, 5, 1, null, JGColor.black);
+        drawImage(1150, 450, "myanim_l3");
+        leftFrame--;
+        leftSec = leftFrame/50;
+        drawString( "Time Left: " + leftSec + " Sec", pfWidth()/2, 5, 1, null, JGColor.black);
+        drawString( "Use keyboard arrows to move", pfWidth()/2, 50, 1, null, JGColor.black);
+    }
+>>>>>>> origin/master
 
    
 
@@ -169,6 +230,7 @@ public class Platformer extends JGEngine{
         clearKey(KeyShift);
         Pj.UpdateScore(player.getScore());
         Pj.setUserScore(""+player.getScore());
+<<<<<<< HEAD
     }
     
     public void paintFrameGameOver(){
@@ -178,6 +240,17 @@ public class Platformer extends JGEngine{
         drawString("Press Enter to restart or Escape to quit", pfWidth()/2, 90, 0, null, JGColor.black);
     }
     
+=======
+    }
+    
+    public void paintFrameGameOver(){
+        drawString("Game Over!", pfWidth()/2, 10, 0, null, JGColor.black);
+        drawString("You lost all lives", pfWidth()/2, 30, 0, null, JGColor.black);
+        drawString("            Your Score was: " + player.getScore(),pfWidth()/2, 60, 0, null, JGColor.black);
+        drawString("Press Enter to restart or Escape to quit", pfWidth()/2, 90, 0, null, JGColor.black);
+    }
+    
+>>>>>>> origin/master
     public void doFrameGameOver(){
         if(getKey(KeyEnter))
         {
@@ -193,7 +266,11 @@ public class Platformer extends JGEngine{
     // Calls: InGame state or exits
     //--------------------------------------------------------------
       public void startTimeUP() throws IOException{
+<<<<<<< HEAD
          gameState = "TimeUp";
+=======
+        gameState = "TimeUp";
+>>>>>>> origin/master
          Pj.UpdateScore(player.getScore());
          Pj.setUserScore(""+player.getScore());
        
@@ -224,7 +301,10 @@ public class Platformer extends JGEngine{
         removeObjects(null, 0, true);
         Pj.UpdateScore(player.getScore());
         Pj.setUserScore(""+player.getScore());
+<<<<<<< HEAD
         
+=======
+>>>>>>> origin/master
     }
     
     public void paintFrameWinGame(){
@@ -318,7 +398,27 @@ public class Platformer extends JGEngine{
         
         public void setLife(int numLives){
             life = numLives;
+<<<<<<< HEAD
         }
+        
+        public void setScore( int Score)
+        {
+            score = Score;
+        }
+       public int getScore()
+       {
+           return score;
+       }
+       public void setPos( int Pos)
+        {
+            pos = Pos;
+=======
+>>>>>>> origin/master
+        }
+       public int getPos()
+       {
+           return pos;
+       }
         
         public void setScore( int Score)
         {
@@ -413,21 +513,32 @@ public class Platformer extends JGEngine{
                 }
                 if(player.y > 500)
                 {
+<<<<<<< HEAD
                    playAudio("mario_die");
                    player.life--;
+=======
+                    player.life--;
+>>>>>>> origin/master
                     player.remove();
                     player = new PlayerObject(life);
                 }
                     
         }
          public void hit(JGObject obj) {
+<<<<<<< HEAD
             playAudio("mario_die");
+=======
+            //playAudio("mario_die");
+>>>>>>> origin/master
             if ((checkCollision(3,-1.0,-1.0)==0) || (checkCollision(3,1.0,-1.0)==0)) {
                 if (player.life==1)
                     setGameState("GameOver");
                 else
                 {
+<<<<<<< HEAD
                     
+=======
+>>>>>>> origin/master
                     player.life--;
                     player.remove();
                     player = new PlayerObject(life);
