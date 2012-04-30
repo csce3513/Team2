@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package platformer;
+
 
 
 
@@ -21,11 +21,13 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import jgame.*;
-import jgame.platform.*;
 
 
 public class Project extends JFrame implements ActionListener
@@ -92,16 +94,21 @@ public class Project extends JFrame implements ActionListener
         welcome_info.setLineWrap(true);
         welcome_info.setWrapStyleWord(true);
         welcome_info.setText("Welcome to Our Game!\n\n"+ 
-                "The idea of this game came from the very well-known"+
+                "The idea of this game came from the well-known"+
                 " game called Super Mario. Therefore, it is played"+
                 " in a way kind of similar to Super Mario."+
                 " You will use your keyboard's arrows to move "+
-                " left, right or up until you reach the goal"+
-                " There is no obstacle for this version of the game,"+
-                " but in the future obstacles and more interesting features"+
-                " will be added for your fun."+
-                " So go ahead and sign in so that you can start playing the game.\n\n"+
-                " Enjoy Playing Our Game!");
+                " left, right or up until you reach the goal.\n"+
+                "To get to the goal you will need to pass 3 enemies, "+
+                " and any contact with the enemy yu will lose a life"+
+                " You score is determined accoerding to your speed,."+
+                " your position on the screen and the number or lives left.\n\n"+
+                " Enjoy Playing Our Game!\n\n\n\n\n\n\n\n" +
+                " Designers and developers: \n\n" +
+                " Jean Pierre\n" +
+                " Juan\n" +
+                " Denis\n" +
+                " Andrew");
        
   
         Welcome.setBorder(BorderFactory.createEtchedBorder(Color.yellow, Color.black));
@@ -147,7 +154,7 @@ public class Project extends JFrame implements ActionListener
                display.setText(this.getUserName() + ", the last time you played you scored " + this.getUserScore());
                else
                {
-                   this.addNewUser(this.getUserName(),0.0);
+                   this.addNewUser(this.getUserName(),0);
                    display.setText("The user name :"+ this.getUserName() + " has been added to the system");
                }
                
@@ -156,7 +163,7 @@ public class Project extends JFrame implements ActionListener
             {
                 Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
             }
-            ourGame = new Platformer(new JGPoint(1000,600));
+            ourGame = new Platformer(new JGPoint(1000,600),this);
         }
          
         else
@@ -222,7 +229,7 @@ public class Project extends JFrame implements ActionListener
         return user_exists;
     }
     
-    public void addNewUser(String name, double score) throws IOException
+    public void addNewUser(String name, int score) throws IOException
     {
         this.setUserName(name);
         BufferedWriter bw = new BufferedWriter(new FileWriter("ScoreBoard.txt",true));
@@ -232,7 +239,66 @@ public class Project extends JFrame implements ActionListener
         bw.close();
        
     }
+    
+    public void DeleteOldScore(String name)
+    {
+     String[] words;    
+     
+    try {
+
+      File inFile = new File("ScoreBoard.txt");
+      
+      if (!inFile.isFile()) {
+        System.out.println("Parameter is not an existing file");
+        return;
+      }
+       
+      //Construct the new file that will later be renamed to the original filename. 
+      File tempFile = new File(inFile.getAbsolutePath() + ".tmp");
+      
+      BufferedReader br = new BufferedReader(new FileReader("ScoreBoard.txt"));
+      PrintWriter pw = new PrintWriter(new FileWriter(tempFile));
+      
+      String line = null;
+
+      //Read from the original file and write to the new 
+      //unless content matches data to be removed.
+      while ((line = br.readLine()) != null) {
+          words = line.split(" ");
+        
+        if (!words[0].equals(name)) {
+
+          pw.println(line);
+          pw.flush();
+        }
+      }
+      pw.close();
+      br.close();
+      
+      //Delete the original file
+      if (!inFile.delete()) {
+        System.out.println("Could not delete file");
+        return;
+      } 
+      
+      //Rename the new file to the filename the original file had.
+      if (!tempFile.renameTo(inFile))
+        System.out.println("Could not rename file");
+      
+    }
+    catch (FileNotFoundException ex) {
+      ex.printStackTrace();
+    }
+    catch (IOException ex) {
+      ex.printStackTrace();
+    }
   
+    }
+  public void UpdateScore(int score) throws IOException
+  {
+      this.DeleteOldScore(this.getUserName());
+      this.addNewUser(this.getUserName(),score);
+  }
   public static void main(String[] args) throws IOException
   {
       Project pj = new Project();
