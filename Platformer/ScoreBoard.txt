@@ -47,7 +47,6 @@ Deaton 0.0
 Deaton 0.0
 denis 0.0
 s 0.0
-d 0.0
 k 0.0
 g 0.0
 f 0.0
@@ -73,3 +72,10 @@ rname 0.0
 Ent\ 0.0
 En\ 0.0
 e 0.0
+sixo 0.0
+sd 0.0
+Et 0.0
+sdfj 0.0
+username 0.0
+deni 0.0
+d 0
