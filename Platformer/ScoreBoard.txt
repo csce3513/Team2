@@ -80,7 +80,8 @@ En 1
 Deaton 0
 Deaton 0
 Deaton 0
-Ente 0
 Deaton 0
 Deaton 0
 Ent 75
+Juan 0
+Ente 23

@@ -91,6 +91,7 @@ public class Platformer extends JGEngine{
     //--------------------------------------------------------------
     
     public void startInGame(){
+        
         removeObjects(null, 0);        
         player = new PlayerObject(3, this);
         enemy = new EnemyObject(470, 350);
